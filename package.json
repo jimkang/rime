@@ -1,0 +1,28 @@
+{
+  "name": "rime",
+  "version": "0.1.0",
+  "description": "Finds rhymes, including loose rhymes",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jimkang/rime.git"
+  },
+  "keywords": [
+    "rhyme",
+    "loose",
+    "words"
+  ],
+  "author": "Jim Kang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jimkang/rime/issues"
+  },
+  "homepage": "https://github.com/jimkang/rime",
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
