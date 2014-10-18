@@ -31,7 +31,26 @@ Unless specified otherwise, any function that has multiple arguments takes them 
           [[], ['stop'], ['liquid', stop]]
         ]```
   is a class sequence set array.
-- It generates an array of all of the possible class sequence combinations from the class sequence set array.
+- It generates an array of all of the possible class sequence permutations from the class sequence set array. e.g. Given the following array:
+```
+      [
+        [sequenceNull, sequenceA, sequenceB],
+        [sequenceOmega],
+        [sequenceNull, sequence1, sequence2]
+      ]```
+    This function will generate:
+```
+      [
+        [sequenceNull, sequenceOmega, sequenceNull],
+        [sequenceNull, sequenceOmega, sequence1],
+        [sequenceNull, sequenceOmega, sequence2],
+        [sequenceA, sequenceOmega, sequenceNull],
+        [sequenceA, sequenceOmega, sequence1],
+        [sequenceA, sequenceOmega, sequence2],
+        [sequenceB, sequenceOmega, sequenceNull],
+        [sequenceB, sequenceOmega, sequence1],
+        [sequenceB, sequenceOmega, sequence2]        
+      ]```
 
 - Maps each class sequence set to
   - Returns ... (actual phoneme combinations)
