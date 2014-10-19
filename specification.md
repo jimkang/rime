@@ -31,11 +31,11 @@ Unless specified otherwise, any function that has multiple arguments takes them 
           [[], ['stop'], ['liquid', stop]]
         ]```
   is a class sequence set array.
-- It generates an array of all of the possible class sequence permutations from the class sequence set array. e.g. Given the following array:
+- It generates an array of all of the possible class sequence permutations (the Cartesian product, see [method in probable](https://github.com/jimkang/probable/blob/master/probable.js#L108)) from the class sequence set array. e.g. Given the following array:
 ```
       [
         [sequenceNull, sequenceA, sequenceB],
-        [sequenceOmega],
+        [sequenceOmega, sequenceGamma],
         [sequenceNull, sequence1, sequence2]
       ]```
     This function will generate:
@@ -44,18 +44,28 @@ Unless specified otherwise, any function that has multiple arguments takes them 
         [sequenceNull, sequenceOmega, sequenceNull],
         [sequenceNull, sequenceOmega, sequence1],
         [sequenceNull, sequenceOmega, sequence2],
+        [sequenceNull, sequenceGamma, sequenceNull],
+        [sequenceNull, sequenceGamma, sequence1],
+        [sequenceNull, sequenceGamma, sequence2],
         [sequenceA, sequenceOmega, sequenceNull],
         [sequenceA, sequenceOmega, sequence1],
         [sequenceA, sequenceOmega, sequence2],
+        [sequenceA, sequenceGamma, sequenceNull],
+        [sequenceA, sequenceGamma, sequence1],
+        [sequenceA, sequenceGamma, sequence2],
         [sequenceB, sequenceOmega, sequenceNull],
         [sequenceB, sequenceOmega, sequence1],
-        [sequenceB, sequenceOmega, sequence2]        
+        [sequenceB, sequenceOmega, sequence2]
+        [sequenceB, sequenceGamma, sequenceNull],
+        [sequenceB, sequenceGamma, sequence1],
+        [sequenceB, sequenceGamma, sequence2]
       ]```
 
-- Maps each class sequence set to
-  - Returns ... (actual phoneme combinations)
+- It uses phonemeNavigator.getPhonemesClass` to map the class sequence permutations to all of the possible phoneme sequences (there will be many phoneme sequences for each class sequence).
+- It returns those phoneme sequences.
 
 **getRelatedPhonemesForLooseRhyme(phoneme)** =>
+  - This is implements the getRelatedPhonemeClasses "interface."
   - One phoneme can be transformed into multiple phonemes or to none.
   - Returns all combinations of the class groups as multiple chains (arrays)
 
