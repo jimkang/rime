@@ -5,6 +5,13 @@ function createDigester(opts) {
 
   function digestToSyllables(word) {
     var syllables;
+
+    var wordKey = word.toUpperCase();
+
+    if (wordKey in wordMap) {
+      syllables = wordMap[wordKey];
+    }
+
     return syllables;
   }
 

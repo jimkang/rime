@@ -15,3 +15,42 @@ test('Word not found', function testWordNotFound(t) {
 
   t.equal(syllables, undefined, 'Returns undefined if it can\'t find word.');
 });
+
+test('Basic case', function basic(t) {
+  t.plan(1);
+
+  var digester = createDigester({
+    wordMappingsPath: wordMappingsPath
+  });
+
+  t.deepEqual(
+    digester.digestToSyllables('encyclopedia'),
+    [
+      [
+        "IH",
+        "N"
+      ],
+      [
+        "S",
+        "AY",
+        "K"
+      ],
+      [
+        "L",
+        "AH"
+      ],
+      [
+        "P",
+        "IY"
+      ],
+      [
+        "D",
+        "IY"
+      ],
+      [
+        "AH"
+      ]
+    ],
+    'Returns the correct phonemes grouped into syllables.'
+  );
+});
