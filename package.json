@@ -21,8 +21,11 @@
     "url": "https://github.com/jimkang/rime/issues"
   },
   "homepage": "https://github.com/jimkang/rime",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
+    "jsonfile": "^2.0.0",
+    "phonemenon": "^1.2.1",
+    "split": "^0.3.3",
+    "tape": "^3.5.0"
   }
 }
