@@ -1,6 +1,7 @@
 var jsonfile = require('jsonfile');
 
 function createDigester(opts) {
+    // TODO: LevelDB instead of memory map.
   var wordMap = jsonfile.readFileSync(opts.wordMappingsPath);
 
   function digestToSyllables(word) {

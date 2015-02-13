@@ -8,3 +8,4 @@ data/syllables-for-words.json: data/phoneme-groups-with-syllables.json
 
 test: data/syllables-for-words.json
 	node tests/digester-tests.js
+	node tests/syllable-butcher-tests.js

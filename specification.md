@@ -73,3 +73,20 @@ Unless specified otherwise, any function that has multiple arguments takes them 
 
 transformRhymeClass(phonemeClass, isInLastSyllable, phonemePositionInSyllable) =>
   Where `phonemePositionInSyllable` is either `start`, `middle`, or `end`.
+
+
+
+
+Simpler (?) loose rhyming:
+
+- Break up the last syllable into phonemes.
+- Preserve the vowelish phoneme.
+- Get the classes of the phonemes that follow the vowel. For each, pick another phoneme from those classes.
+  - You can't do this. You can end up with ['L', 'JH'] for ['R', 'CH'], which doesn't make sense.
+  - Instead, substitute a phoneme from the last phoneme and grow the sequence back to the vowel.
+- Set up a partial phoneme chain using the phonemes from the last two steps. (vowel + substitute consonants)
+- Pass that to a phoneme-sequencer to grow it out to the start.
+- Reassemble.
+- Look up words ending with that new chain.
+
+
