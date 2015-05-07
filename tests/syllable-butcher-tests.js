@@ -2,17 +2,17 @@ var test = require('tape');
 var createButcher = require('../syllable-butcher').createButcher;
 var seedrandom = require('seedrandom');
 
-test('Proper construction', function ctorTest(t) {
-  t.plan(1);
+// test('Proper construction', function ctorTest(t) {
+//   t.plan(1);
 
-  t.throws(
-    function createWithoutRandom() {
-      createButcher();
-    },
-    'No random function provided.',
-    'Throws if a random function is not provided.'
-  );
-});
+//   t.throws(
+//     function createWithoutRandom() {
+//       createButcher();
+//     },
+//     'No random function provided.',
+//     'Throws if a random function is not provided.'
+//   );
+// });
 
 test('Substitute', function substituteTest(t) {
   t.plan(1);
@@ -42,7 +42,6 @@ test('Stuff tail', function stuffTailTest(t) {
   );
 });
 
-
 test('Stuff head', function stuffHeadTest(t) {
   t.plan(1);
   
@@ -54,5 +53,17 @@ test('Stuff head', function stuffHeadTest(t) {
     butcher.stuffSyllableHead('G'),
     ['START', 'G', 'L'],
     'Creates a syllable-starting phoneme sequence'
+  );
+});
+
+test('Substitutes', function substitutesTest(t) {
+  t.plan(1);
+
+  var butcher = createButcher();
+
+  t.deepEqual(
+    butcher.getPhonemeSubstitutes('CH'),
+    ['JH', 'CH'],
+    'Gets substitutes for phoneme from the same family.'
   );
 });

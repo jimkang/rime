@@ -4,21 +4,25 @@ var _ = require('lodash');
 var createSequencer = require('phoneme-sequencer').createSyllableCapSequencer;
 
 function createSyllableButcher(opts) {
-  if (!opts || typeof opts.random !== 'function') {
-    throw new Error('No random function provided.');
+  // if (!opts || typeof opts.random !== 'function') {
+  //   throw new Error('No random function provided.');
+  // }
+
+  var randomInOpts = {};
+  if (opts) {
+    randomInOpts.random = opts.random;
   }
 
-  var probable = probableLib.createProbable({
-    random: opts.random
-  });
+  var probable = probableLib.createProbable(randomInOpts);
 
-  var sequencer = createSequencer({
-    random: opts.random
-  });
+  var sequencer = createSequencer(randomInOpts);
 
   function substitutePhoneme(phoneme) {
-    var choices = phonemeTypes.getPhonemesInSameClass(phoneme).concat(phoneme);
-    return probable.pickFromArray(choices);
+    return probable.pickFromArray(getPhonemeSubstitutes(phoneme));
+  }
+
+  function getPhonemeSubstitutes(phoneme) {
+    return phonemeTypes.getPhonemesInSameClass(phoneme).concat(phoneme);
   }
 
   function stuffSyllableHead(openingPhoneme) {
@@ -35,6 +39,7 @@ function createSyllableButcher(opts) {
 
   return {
     substitutePhoneme: substitutePhoneme,
+    getPhonemeSubstitutes: getPhonemeSubstitutes,
     stuffSyllableHead: stuffSyllableHead,
     stuffSyllableTail: stuffSyllableTail
   };
