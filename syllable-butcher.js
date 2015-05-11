@@ -26,15 +26,15 @@ function createSyllableButcher(opts) {
   }
 
   function stuffSyllableHead(openingPhoneme) {
-    return sequencer({
+    return trimStart(sequencer({
       base: ['START', openingPhoneme]
-    });
+    }));
   }
 
   function stuffSyllableTail(closingPhoneme) {
-    return sequencer({
+    return trimEnd(sequencer({
       base: [closingPhoneme, 'END']
-    });
+    }));
   }
 
   return {
@@ -43,6 +43,22 @@ function createSyllableButcher(opts) {
     stuffSyllableHead: stuffSyllableHead,
     stuffSyllableTail: stuffSyllableTail
   };
+}
+
+function trimStart(sequence) {
+  var trimmed = sequence;
+  if (sequence[0] === 'START') {
+    trimmed = sequence.slice(1);
+  }
+  return trimmed;
+}
+
+function trimEnd(sequence) {
+  var trimmed = sequence;
+  if (sequence.length > 0 && sequence[sequence.length - 1] === 'END') {
+    trimmed = sequence.slice(0, sequence.length - 1);
+  }
+  return trimmed;
 }
 
 module.exports = {

@@ -37,7 +37,7 @@ test('Stuff tail', function stuffTailTest(t) {
 
   t.deepEqual(
     butcher.stuffSyllableTail('T'),
-    ['N', 'T', 'END'],
+    ['N', 'T'],
     'Creates a syllable-ending phoneme sequence'
   );
 });
@@ -51,7 +51,7 @@ test('Stuff head', function stuffHeadTest(t) {
 
   t.deepEqual(
     butcher.stuffSyllableHead('G'),
-    ['START', 'G', 'L'],
+    ['G', 'L'],
     'Creates a syllable-starting phoneme sequence'
   );
 });
