@@ -88,6 +88,7 @@ function createRime(opts) {
     addToArrayIfExists(permutationElements, startSequences);
     addToArrayIfExists(permutationElements, dividedSyllable.middle);
     addToArrayIfExists(permutationElements, endSequences);
+    debugger;
     return probable.getCartesianProduct(permutationElements);
   }
 
