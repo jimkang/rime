@@ -69,65 +69,37 @@ function createRime(opts) {
     return rhymes;
   }
 
+  function getSyllableVariants(butcher, phonemes, syllablePosition) {
+    var dividedSyllable = divideSyllable(phonemes);
+    if (dividedSyllable.middle.length > 1) {
+      throw new Error('Turns out you do have to deal with multiple middle phonemes!');
+    }
+    // 1. Get substitutes for the phonemes at the start and end.
+    var startingPhoneme = dividedSyllable.start;
+    var endingPhoneme = dividedSyllable.end;
+    var startingSubstitutes = butcher.getPhonemeSubstitutes(startingPhoneme);
+    var endingSubstitutes = butcher.getPhonemeSubstitutes(endingPhoneme);
+
+    // 2. Stuff heads and tails for each of those substitutes.
+    var startSequences = startingSubstitutes.map(butcher.stuffSyllableHead);
+    var endSequences = startingSubstitutes.map(butcher.stuffSyllableTail);
+    // 3. Reconstitute the permutations.
+    var permutationElements = [];
+    addToArrayIfExists(permutationElements, startSequences);
+    addToArrayIfExists(permutationElements, dividedSyllable.middle);
+    addToArrayIfExists(permutationElements, endSequences);
+    return probable.getCartesianProduct(permutationElements);
+  }
+
   return exportMethods(getRhymeSyllables);
 }
 
-function getSyllableVariants(butcher, phonemes, syllablePosition) {
-  var dividedSyllable = divideSyllable(phonemes);
-  if (dividedSyllable.middle.length > 1) {
-    throw new Error('Turns out you do have to deal with multiple middle phonemes!');
-  }
-  // var substitutes = butcher.getPhonemeSubstitutes(dividedSyllable.middle[0]);
-
-  // TODO: YOU ARE DOING IT WRONG.
-  // 1. Get substitutes for the phonemes at the start and end.
-  var startingPhoneme = phonemes[0];
-  var endingPhoneme = phonemes[phonemes.length - 1];
-  var startingSubstitutes = butcher.getPhonemeSubstitutes(startingPhoneme);
-  var endingSubstitutes = butcher.getPhonemeSubstitutes(endingPhoneme);
-
-  // 2. Stuff heads and tails for each of those substitutes.
-  var startSequences = startingSubstitutes.map(butcher.stuffSyllableHead);
-  var endSequences = startingSubstitutes.map(butcher.stuffSyllableTail);
-  debugger;
-  // 3. Reconstitute the permutations.
-  var variants = [];
-
-  if (syllablePosition !== 'end') {
-    var headVariant = butcher.stuffSyllableHead(dividedSyllable.middle[0]);
-    if (dividedSyllable.end) {
-      headVariant = headVariant.concat(dividedSyllable.end);
-    }
-    if (!_.isEqual(phonemes, headVariant)) {
-      variants.push(headVariant);
-    }
-  }
-
-  if (syllablePosition != 'start') {
-    var tailVariant = butcher.stuffSyllableTail(dividedSyllable.middle[0]);
-    if (dividedSyllable.start) {
-      tailVariant = dividedSyllable.start.concat(tailVariant);
-    }  
-    if (!_.isEqual(phonemes, tailVariant)) {
-      variants.push(tailVariant);
-    }
-  }
-  return variants;
-  // var permutationElements = [];
-  // addToArrayIfExists(permutationElements, dividedSyllable.start);
-  // addToArrayIfExists(permutationElements, substitutes);
-  // addToArrayIfExists(permutationElements, dividedSyllable.end);
-
-  // var variants = probable.getCartesianProduct(permutationElements);
-  // substitutes.forEach()stuffTailTest
-}
 
 function addToArrayIfExists(array, element) {
   if (element) {
     array.push(element);
   }
 }
-
 
 function permuteWordWithSyllableVariants(syllables, indexToVary, variants) {
   return variants.map(syllablesWithVariantInserted);

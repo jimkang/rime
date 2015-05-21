@@ -87,6 +87,6 @@ Simpler (?) loose rhyming:
 - Set up a partial phoneme chain using the phonemes from the last two steps. (vowel + substitute consonants)
 - Pass that to a phoneme-sequencer to grow it out to the start.
 - Reassemble.
+  - Mix in plurals at random.
 - Look up words ending with that new chain.
-
 
