@@ -36,18 +36,17 @@ function createRime(opts) {
     wordMappingsPath: wordMappingsPath
   });
 
-  function getRhymeSyllables(opts) {
+  function getLastSyllableRhymes(opts) {
     var rhymes;
     var base = opts.base;
     var indexOfSyllableToVary = opts.indexOfSyllableToVary;
 
-    // TODO: Produce rhymes that are shorter than the base.
     var syllables = digester.digestToSyllables(base);
     if (syllables && syllables.length > 0) {
       if (isNaN(indexOfSyllableToVary) ||
         indexOfSyllableToVary >= syllables.length) {
 
-        indexOfSyllableToVary = probable.roll(syllables.length);
+        indexOfSyllableToVary = syllables.length - 1;
       }
 
       var varyingSyllablePosition = 'middle';
@@ -58,11 +57,8 @@ function createRime(opts) {
         varyingSyllablePosition = 'end';
       }
 
-      var variants = getSyllableVariants(
+      return getSyllableVariants(
         butcher, syllables[indexOfSyllableToVary], varyingSyllablePosition
-      );
-      rhymes = permuteWordWithSyllableVariants(
-        syllables, indexOfSyllableToVary, variants
       );
     }
 
@@ -88,11 +84,11 @@ function createRime(opts) {
     addToArrayIfExists(permutationElements, startSequences);
     addToArrayIfExists(permutationElements, dividedSyllable.middle);
     addToArrayIfExists(permutationElements, endSequences);
-    debugger;
-    return probable.getCartesianProduct(permutationElements);
+    var product = probable.getCartesianProduct(permutationElements);
+    return uniqNested(product);
   }
 
-  return exportMethods(getRhymeSyllables);
+  return exportMethods(getLastSyllableRhymes);
 }
 
 
@@ -102,13 +98,22 @@ function addToArrayIfExists(array, element) {
   }
 }
 
-function permuteWordWithSyllableVariants(syllables, indexToVary, variants) {
-  return variants.map(syllablesWithVariantInserted);
+function uniqNested(array) {
+  var result = [];
+  for (var i = 0; i < array.length; ++i) {
+    var value = array[i];
+    if (!elementIsInArray(value, result)) {
+      result.push(value);
+    }
+  }
+  return result;
+}
 
-  function syllablesWithVariantInserted(variant) {
-    var withVariant = syllables.slice();
-    withVariant[indexToVary] = variant;
-    return withVariant;
+function elementIsInArray(element, array) {
+  return array.some(isEqualToElement);
+
+  function isEqualToElement(anElement) {
+    return _.isEqual(anElement, element);
   }
 }
 
