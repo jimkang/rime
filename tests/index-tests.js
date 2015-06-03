@@ -16,6 +16,15 @@ var testCases = [
       // ["L","IY","L"],
       // ["L","IY","G","R"],
       // ["L","IY","P","L"]
+    ],
+    matchingWords: [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
     ]
   },
   {
@@ -64,23 +73,24 @@ var testCases = [
       [ 'P', 'AO', 'K' ],
       [ 'P', 'AO', 'P' ],
       [ 'P', 'AO', 'T' ]
-    ]
+    ],
     // TODO: When `stuffHead` is fixed and doesn't create ridiculous 
     // sequences like "PRK", update.
+    matchingWords: [
+    ]
   }
 ];
 
 testCases.forEach(runTest);
 
 function runTest(testCase, caseNumber) {
-  test('Test case ' + caseNumber, caseTest);
-
-  function caseTest(t) {
+  test('Rhymes test case ' + caseNumber, function caseGetRhymesTest(t) {
     var rime = createRime({
-      random: seedrandom(testCase.seed)
+      random: seedrandom(testCase.seed),
+      wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
     });
 
-    var result = rime.getLastSyllableRhymes({
+    var rhymes = rime.getLastSyllableRhymes({
       base: testCase.word
     });
 
@@ -88,18 +98,57 @@ function runTest(testCase, caseNumber) {
 
     t.equal(
       testCase.rhymes.length,
-      result.length,
+      rhymes.length,
       'Returns the right number of rhymes.'
     );
 
-    testCase.rhymes.forEach(checkResult);
+    testCase.rhymes.forEach(checkRhymes);
 
-    function checkResult(expected, i) {
+    rime.closeDb();
+
+    function checkRhymes(expected, i) {
       t.deepEqual(
-        result[i],
+        rhymes[i],
         expected,
         'Iteration ' + i + ': Returns the expected rhyme.'
       );
     }
-  }
+  });
+
+  // test('Words test case ' + caseNumber, function caseGetWordsTest(t) {
+  //   var rime = createRime({
+  //     random: seedrandom(testCase.seed),
+  //     wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+  //   });
+
+  //   var words = testCase.rhymes.map(rime.getWordsThatFitPhonemes);
+
+  //   t.plan(testCase.rhymes.length * 2 + 1);
+
+  //   t.equal(
+  //     testCase.rhymes.length,
+  //     rhymes.length,
+  //     'Returns the right number of rhymes.'
+  //   );
+
+  //   testCase.rhymes.forEach(checkRhymes);
+  //   testCase.matchingWords.forEach(checkWords);
+
+  //   function checkRhymes(expected, i) {
+  //     t.deepEqual(
+  //       rhymes[i],
+  //       expected,
+  //       'Iteration ' + i + ': Returns the expected rhyme.'
+  //     );
+  //   }
+
+  //   function checkWords(expectedWords, i) {
+  //     t.deepEqual(
+  //       words[i],
+  //       expectedWords,
+  //       'Iteration ' + i + ': Returns the expected words.'
+  //     );
+  //   }
+  // });
+
 }

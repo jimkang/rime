@@ -7,21 +7,27 @@ var createProbable = require('probable').createProbable;
 var phonemeTypes = require('phoneme-types');
 var divideSyllable = require('./divide-syllable');
 var _ = require('lodash');
+var createWordPhonemeMap = require('word-phoneme-map').createWordPhonemeMap;
 
 function createRime(opts) {
   var random;
-  var wordMappingsPath;
+  var wordSyllableMappingsPath;
+  var wordPhonemeDbPath;
 
   if (opts) {
     random = opts.random;
-    wordMappingsPath = opts.wordMappingsPath;
+    wordSyllableMappingsPath = opts.wordSyllableMappingsPath;
+    wordPhonemeDbPath = opts.wordPhonemeDbPath;
   }
 
+  if (!wordPhonemeDbPath) {
+    wordPhonemeDbPath = __dirname + '/data/word-phoneme-map.db';
+  }
   if (!random) {
     random = seedrandom((new Date()).toISOString());
   }
-  if (!wordMappingsPath) {
-    wordMappingsPath = __dirname + '/data/syllables-for-words.json';
+  if (!wordSyllableMappingsPath) {
+    wordSyllableMappingsPath = __dirname + '/data/syllables-for-words.json';
   }
 
   var probable = createProbable({
@@ -33,7 +39,11 @@ function createRime(opts) {
   });
 
   var digester = createDigester({
-    wordMappingsPath: wordMappingsPath
+    wordSyllableMappingsPath: wordSyllableMappingsPath
+  });
+
+  var wordPhonemeMap = createWordPhonemeMap({
+    dbLocation: wordPhonemeDbPath
   });
 
   function getLastSyllableRhymes(opts) {
@@ -88,9 +98,16 @@ function createRime(opts) {
     return uniqNested(product);
   }
 
-  return exportMethods(getLastSyllableRhymes);
-}
+  function getWordsThatFitPhonemes(phonemes, done) {
+    wordPhonemeMap.wordsForPhonemeSequence(phonemes, done);
+  }
 
+  function closeDb() {
+    wordPhonemeMap.close();
+  }
+
+  return exportMethods(getLastSyllableRhymes, getWordsThatFitPhonemes, closeDb);
+}
 
 function addToArrayIfExists(array, element) {
   if (element) {

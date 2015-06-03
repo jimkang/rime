@@ -10,3 +10,6 @@ test: data/syllables-for-words.json
 	node tests/digester-tests.js
 	node tests/syllable-butcher-tests.js
 	node tests/index-tests.js
+
+build-word-phoneme-map:
+	node build/build-word-phoneme-map.js

@@ -11,10 +11,10 @@ if (process.argv.length < 3) {
 
 var word = process.argv[2];
 
-var wordMappingsPath = __dirname + '/../data/syllables-for-words.json';
+var wordSyllableMappingsPath = __dirname + '/../data/syllables-for-words.json';
 
 var digester = createDigester({
-  wordMappingsPath: wordMappingsPath
+  wordSyllableMappingsPath: wordSyllableMappingsPath
 });
 
 var syllables = digester.digestToSyllables(word);
