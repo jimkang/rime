@@ -1,6 +1,7 @@
 var test = require('tape');
 var createRime = require('../index');
 var seedrandom = require('seedrandom');
+var queue = require('queue-async');
 
 var testCases = [
   {
@@ -12,17 +13,13 @@ var testCases = [
       ["L","IY","P","L"],
       ["R","IY","L"],
       ["R","IY","G","R"],
-      ["R","IY","P","L"],
-      // ["L","IY","L"],
-      // ["L","IY","G","R"],
-      // ["L","IY","P","L"]
+      ["R","IY","P","L"]
     ],
     matchingWords: [
+      [ 'LEAL', 'LILLE' ],
       [],
       [],
-      [],
-      [],
-      [],
+      [ 'REAL', 'REEL', 'RIEHL', 'RIEL' ],
       [],
       []
     ]
@@ -77,6 +74,88 @@ var testCases = [
     // TODO: When `stuffHead` is fixed and doesn't create ridiculous 
     // sequences like "PRK", update.
     matchingWords: [
+      [],
+      [
+        "BAUD",
+        "BAWD"
+      ],
+      [
+        "BOG"
+      ],
+      [
+        "BALK"
+      ],
+      [],
+      [
+        "BOUGHT"
+      ],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [
+        "GAUB"
+      ],
+      [],
+      [],
+      [
+        "GAWK"
+      ],
+      [],
+      [
+        "GAUT"
+      ],
+      [],
+      [],
+      [
+        "COG"
+      ],
+      [
+        "CALK",
+        "CAULK",
+        "KALK",
+        "KAUK"
+      ],
+      [
+        "KAUP",
+        "KAUPP"
+      ],
+      [
+        "CAUGHT"
+      ],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [
+        "TAUBE"
+      ],
+      [],
+      [],
+      [
+        "TALK"
+      ],
+      [
+        "TOP"
+      ],
+      [
+        "TAUGHT",
+        "TAUT"
+      ],
+      [],
+      [
+        "PAWED"
+      ],
+      [],
+      [],
+      [
+        "PAUP"
+      ],
+      []
     ]
   }
 ];
@@ -85,6 +164,8 @@ testCases.forEach(runTest);
 
 function runTest(testCase, caseNumber) {
   test('Rhymes test case ' + caseNumber, function caseGetRhymesTest(t) {
+    t.plan(testCase.rhymes.length + 2);
+
     var rime = createRime({
       random: seedrandom(testCase.seed),
       wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
@@ -93,8 +174,6 @@ function runTest(testCase, caseNumber) {
     var rhymes = rime.getLastSyllableRhymes({
       base: testCase.word
     });
-
-    t.plan(testCase.rhymes.length + 1 + 1);
 
     t.equal(
       testCase.rhymes.length,
@@ -119,40 +198,45 @@ function runTest(testCase, caseNumber) {
     }
   });
 
-  // test('Words test case ' + caseNumber, function caseGetWordsTest(t) {
-  //   var rime = createRime({
-  //     random: seedrandom(testCase.seed),
-  //     wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
-  //   });
+  test('Words test case ' + caseNumber, function caseGetWordsTest(t) {
+    t.plan(testCase.matchingWords.length + 3);
 
-  //   var words = testCase.rhymes.map(rime.getWordsThatFitPhonemes);
+    var rime = createRime({
+      random: seedrandom(testCase.seed),
+      wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+    });
 
-  //   t.plan(testCase.rhymes.length * 2 + 1);
+    var q = queue(1);
+    testCase.rhymes.forEach(queueGetWords);
+    q.awaitAll(checkAllWords);
 
-  //   t.equal(
-  //     testCase.rhymes.length,
-  //     rhymes.length,
-  //     'Returns the right number of rhymes.'
-  //   );
+    function queueGetWords(rhyme) {
+      q.defer(rime.getWordsThatFitPhonemes, rhyme)
+    }
 
-  //   testCase.rhymes.forEach(checkRhymes);
-  //   testCase.matchingWords.forEach(checkWords);
+    function checkAllWords(error, words) {
+      t.ok(!error, 'No error occurred while getting words.');
+      t.equal(
+        testCase.matchingWords.length,
+        words.length,
+        'Returns the right number of matching words.'
+      );
 
-  //   function checkRhymes(expected, i) {
-  //     t.deepEqual(
-  //       rhymes[i],
-  //       expected,
-  //       'Iteration ' + i + ': Returns the expected rhyme.'
-  //     );
-  //   }
+      testCase.matchingWords.forEach(checkWords);
 
-  //   function checkWords(expectedWords, i) {
-  //     t.deepEqual(
-  //       words[i],
-  //       expectedWords,
-  //       'Iteration ' + i + ': Returns the expected words.'
-  //     );
-  //   }
-  // });
+      rime.closeDb(checkClose);
 
+      function checkWords(expectedWords, i) {
+        t.deepEqual(
+          words[i],
+          expectedWords,
+          'Iteration ' + i + ': Returns the expected words.'
+        );
+      }
+    }
+
+    function checkClose(error) {
+      t.ok(!error, 'No error while closing database.');
+    }
+  });
 }

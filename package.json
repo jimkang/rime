@@ -22,7 +22,9 @@
     "url": "https://github.com/jimkang/rime/issues"
   },
   "homepage": "https://github.com/jimkang/rime",
-  "devDependencies": {},
+  "devDependencies": {
+    "queue-async": "^1.0.7"
+  },
   "dependencies": {
     "conform-async": "^1.1.1",
     "export-methods": "^1.1.0",

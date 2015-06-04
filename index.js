@@ -46,6 +46,8 @@ function createRime(opts) {
     dbLocation: wordPhonemeDbPath
   });
 
+  // TODO: Rename to getSequencesThatRhymeWithLastSyllable?
+  // Something more accurate but not that long.
   function getLastSyllableRhymes(opts) {
     var rhymes;
     var base = opts.base;
@@ -98,6 +100,8 @@ function createRime(opts) {
     return uniqNested(product);
   }
 
+  // TODO: These are exact matches. Should return anything that has the same 
+  // ending phoneme sequence.
   function getWordsThatFitPhonemes(phonemes, done) {
     wordPhonemeMap.wordsForPhonemeSequence(phonemes, done);
   }
