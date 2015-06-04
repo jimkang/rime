@@ -102,8 +102,8 @@ function createRime(opts) {
     wordPhonemeMap.wordsForPhonemeSequence(phonemes, done);
   }
 
-  function closeDb() {
-    wordPhonemeMap.close();
+  function closeDb(done) {
+    wordPhonemeMap.close(done);
   }
 
   return exportMethods(getLastSyllableRhymes, getWordsThatFitPhonemes, closeDb);

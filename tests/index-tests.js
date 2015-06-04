@@ -94,7 +94,7 @@ function runTest(testCase, caseNumber) {
       base: testCase.word
     });
 
-    t.plan(testCase.rhymes.length + 1);
+    t.plan(testCase.rhymes.length + 1 + 1);
 
     t.equal(
       testCase.rhymes.length,
@@ -104,7 +104,7 @@ function runTest(testCase, caseNumber) {
 
     testCase.rhymes.forEach(checkRhymes);
 
-    rime.closeDb();
+    rime.closeDb(checkClose);
 
     function checkRhymes(expected, i) {
       t.deepEqual(
@@ -112,6 +112,10 @@ function runTest(testCase, caseNumber) {
         expected,
         'Iteration ' + i + ': Returns the expected rhyme.'
       );
+    }
+
+    function checkClose(error) {
+      t.ok(!error, 'No error while closing database.');
     }
   });
 
