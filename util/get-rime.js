@@ -13,24 +13,29 @@ var word = process.argv[2];
 var seed = (new Date()).toISOString();
 console.log('Seed:', seed);
 
-var rime = createRime({
-  random: seedrandom(seed),
-  wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
-});
+createRime(
+  {
+    random: seedrandom(seed),
+    wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+  },
+  getRhymesWithRime
+);
 
-var rhymes = rime.getLastSyllableRhymes({
-  base: word
-});
+function getRhymesWithRime(error, rime) {
+  var rhymes = rime.getLastSyllableRhymes({
+    base: word
+  });
 
-console.log('Last syllable rhyme phoneme sequences:');
-console.log(JSON.stringify(rhymes, null, '  '));
+  console.log('Last syllable rhyme phoneme sequences:');
+  console.log(JSON.stringify(rhymes, null, '  '));
 
-var q = queue(1);
-rhymes.forEach(queueGetWords);
-q.awaitAll(reportAllWords);
+  var q = queue(1);
+  rhymes.forEach(queueGetWords);
+  q.awaitAll(reportAllWords);
 
-function queueGetWords(rhyme) {
-  q.defer(rime.getWordsThatFitPhonemes, rhyme)
+  function queueGetWords(rhyme) {
+    q.defer(rime.getWordsThatFitPhonemes, rhyme)
+  }
 }
 
 function reportAllWords(error, words) {
