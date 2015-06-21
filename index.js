@@ -9,10 +9,11 @@ var divideSyllable = require('./divide-syllable');
 var _ = require('lodash');
 var createWordPhonemeMap = require('word-phoneme-map').createWordPhonemeMap;
 
-function createRime(opts) {
+function createRime(opts, createDone) {
   var random;
   var wordSyllableMappingsPath;
   var wordPhonemeDbPath;
+  var wordPhonemeMap;
 
   if (opts) {
     random = opts.random;
@@ -42,9 +43,12 @@ function createRime(opts) {
     wordSyllableMappingsPath: wordSyllableMappingsPath
   });
 
-  var wordPhonemeMap = createWordPhonemeMap({
-    dbLocation: wordPhonemeDbPath
-  });
+  createWordPhonemeMap(
+    {
+      dbLocation: wordPhonemeDbPath
+    },
+    passBackExports
+  );
 
   // TODO: Rename to getSequencesThatRhymeWithLastSyllable?
   // Something more accurate but not that long.
@@ -103,14 +107,24 @@ function createRime(opts) {
   // TODO: These are exact matches. Should return anything that has the same 
   // ending phoneme sequence.
   function getWordsThatFitPhonemes(phonemes, done) {
-    wordPhonemeMap.wordsForPhonemeSequence(phonemes, done);
+    wordPhonemeMap.wordsForPhonemeEndSequence(phonemes, done);
   }
 
   function closeDb(done) {
     wordPhonemeMap.close(done);
   }
 
-  return exportMethods(getLastSyllableRhymes, getWordsThatFitPhonemes, closeDb);
+  function passBackExports(error, theWordPhonemeMap) {
+    wordPhonemeMap = theWordPhonemeMap;
+    createDone(
+      error,
+      exportMethods(
+        getLastSyllableRhymes,
+        getWordsThatFitPhonemes,
+        closeDb
+      )
+    );
+  }
 }
 
 function addToArrayIfExists(array, element) {

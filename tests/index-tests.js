@@ -16,10 +16,11 @@ var testCases = [
       ["R","IY","P","L"]
     ],
     matchingWords: [
-      [ 'LEAL', 'LILLE' ],
+      [ 'LEAL', 'LILLE', 'BLEIL', 'KALEEL' ],
       [],
       [],
-      [ 'REAL', 'REEL', 'RIEHL', 'RIEL' ],
+      [ 'REAL', 'REEL', 'RIEHL', 'RIEL',
+      'BRIEL', 'CREAL', 'CREEL', 'FREEL', 'FRIEL', 'ADRIEL', 'VERRILL', 'FERRILL', 'TERRILE', 'CORIELL', 'MORRILL', 'ENRILE', 'UNREAL', 'MERIEL', 'AVERILL', 'JABRIL', 'CURIEL', 'PUERILE', 'MCGREAL', 'NEWSREEL', 'VANDRIEL', 'BECERRIL', 'VILLARREAL' ],
       [],
       []
     ]
@@ -77,7 +78,8 @@ var testCases = [
       [],
       [
         "BAUD",
-        "BAWD"
+        "BAWD",
+        "BACKBOARD"
       ],
       [
         "BOG"
@@ -85,9 +87,13 @@ var testCases = [
       [
         "BALK"
       ],
-      [],
       [
-        "BOUGHT"
+        "HALEBOPP"
+      ],
+      [
+        "BOUGHT",
+        'CAILLEBOTTE',
+        'OVERBOUGHT'
       ],
       [],
       [],
@@ -99,48 +105,63 @@ var testCases = [
         "GAUB"
       ],
       [],
-      [],
+      [
+        'METAGOGUE',
+        'SYNAGOGUE'
+      ],
       [
         "GAWK"
       ],
       [],
       [
-        "GAUT"
+        "GAUT",
+        'BEGOT'
       ],
       [],
       [],
       [
-        "COG"
+        "COG",
+        'ACOG'
       ],
       [
         "CALK",
         "CAULK",
         "KALK",
-        "KAUK"
+        "KAUK",
+        'BABCOCK',
+        'GAMECOCK',
+        'POPPYCOCK'
       ],
       [
         "KAUP",
-        "KAUPP"
+        "KAUPP",
+        'KCOP'
       ],
       [
-        "CAUGHT"
-      ],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [
-        "TAUBE"
+        "CAUGHT",
+        'ACOTT', 'SICOTTE', 'PICOTTE', 'TURCOTTE', 'MARCOTTE', 'MASSICOTTE', 'BOURSICOT', 'BOURSICOT'
       ],
       [],
       [],
+      [],
+      [],
+      [],
+      [],
       [
-        "TALK"
+        "TAUBE",
+        'STAUB'
       ],
       [
-        "TOP"
+        'STAUDE'
+      ],
+      [],
+      [
+        "TALK",
+        'STALK', 'CROSSTALK', 'SMALLTALK', 'CORNSTALK', 'HONESTOK'
+      ],
+      [
+        "TOP",
+        'STAUP', 'RAGTOP', 'TREETOP'
       ],
       [
         "TAUGHT",
@@ -148,10 +169,13 @@ var testCases = [
       ],
       [],
       [
-        "PAWED"
+        "PAWED",
+        'IPOD', 'PEAPOD'
       ],
       [],
-      [],
+      [
+        'TUPAC'
+      ],
       [
         "PAUP"
       ],
@@ -164,33 +188,40 @@ testCases.forEach(runTest);
 
 function runTest(testCase, caseNumber) {
   test('Rhymes test case ' + caseNumber, function caseGetRhymesTest(t) {
-    t.plan(testCase.rhymes.length + 2);
+    t.plan(testCase.rhymes.length + 3);
 
-    var rime = createRime({
-      random: seedrandom(testCase.seed),
-      wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
-    });
-
-    var rhymes = rime.getLastSyllableRhymes({
-      base: testCase.word
-    });
-
-    t.equal(
-      testCase.rhymes.length,
-      rhymes.length,
-      'Returns the right number of rhymes.'
+    createRime(
+      {
+        random: seedrandom(testCase.seed),
+        wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+      },
+      useRime
     );
 
-    testCase.rhymes.forEach(checkRhymes);
+    function useRime(error, rime) {
+      t.ok(!error, 'No error while creating rime.');
 
-    rime.closeDb(checkClose);
+      var rhymes = rime.getLastSyllableRhymes({
+        base: testCase.word
+      });
 
-    function checkRhymes(expected, i) {
-      t.deepEqual(
-        rhymes[i],
-        expected,
-        'Iteration ' + i + ': Returns the expected rhyme.'
+      t.equal(
+        testCase.rhymes.length,
+        rhymes.length,
+        'Returns the right number of rhymes.'
       );
+
+      testCase.rhymes.forEach(checkRhymes);
+
+      rime.closeDb(checkClose);
+
+      function checkRhymes(expected, i) {
+        t.deepEqual(
+          rhymes[i],
+          expected,
+          'Iteration ' + i + ': Returns the expected rhyme.'
+        );
+      }
     }
 
     function checkClose(error) {
@@ -199,39 +230,47 @@ function runTest(testCase, caseNumber) {
   });
 
   test('Words test case ' + caseNumber, function caseGetWordsTest(t) {
-    t.plan(testCase.matchingWords.length + 3);
+    t.plan(testCase.matchingWords.length + 4);
 
-    var rime = createRime({
-      random: seedrandom(testCase.seed),
-      wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
-    });
+    createRime(
+      {
+        random: seedrandom(testCase.seed),
+        wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+      },
+      useRime
+    );
 
-    var q = queue(1);
-    testCase.rhymes.forEach(queueGetWords);
-    q.awaitAll(checkAllWords);
+    function useRime(error, rime) {
+      t.ok(!error, 'No error while creating rime.');
 
-    function queueGetWords(rhyme) {
-      q.defer(rime.getWordsThatFitPhonemes, rhyme)
-    }
+      var q = queue(1);
+      testCase.rhymes.forEach(queueGetWords);
+      q.awaitAll(checkAllWords);
 
-    function checkAllWords(error, words) {
-      t.ok(!error, 'No error occurred while getting words.');
-      t.equal(
-        testCase.matchingWords.length,
-        words.length,
-        'Returns the right number of matching words.'
-      );
+      function queueGetWords(rhyme) {
+        q.defer(rime.getWordsThatFitPhonemes, rhyme)
+      }
 
-      testCase.matchingWords.forEach(checkWords);
+      function checkAllWords(error, words) {
+        t.ok(!error, 'No error occurred while getting words.');
 
-      rime.closeDb(checkClose);
-
-      function checkWords(expectedWords, i) {
-        t.deepEqual(
-          words[i],
-          expectedWords,
-          'Iteration ' + i + ': Returns the expected words.'
+        t.equal(
+          testCase.matchingWords.length,
+          words.length,
+          'Returns the right number of matching words.'
         );
+
+        testCase.matchingWords.forEach(checkWords);
+
+        rime.closeDb(checkClose);
+
+        function checkWords(expectedWords, i) {
+          t.deepEqual(
+            words[i],
+            expectedWords,
+            'Iteration ' + i + ': Returns the expected words.'
+          );
+        }
       }
     }
 

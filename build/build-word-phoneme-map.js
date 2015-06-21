@@ -4,7 +4,7 @@ var indexOpts = {
   dbLocation: __dirname + '/../data/word-phoneme-map.db'
 };
 
-console.log('Building word-phoneme-map.db. (Will take a few minutes.)');
+console.log('Building word-phoneme-map.db. Takes about 45 minutes on a MacBook with a 2 GHz Intel Core Duo with 2 GB RAM.)');
 
 setUpDatabase(indexOpts, reportDone);
 
