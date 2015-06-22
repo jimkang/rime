@@ -4,8 +4,7 @@
   "description": "Finds rhymes, including loose rhymes",
   "main": "index.js",
   "scripts": {
-    "test": "make test",
-    "postinstall": "make build-word-phoneme-map"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
