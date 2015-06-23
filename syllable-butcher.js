@@ -22,7 +22,7 @@ function createSyllableButcher(opts) {
   }
 
   function getPhonemeSubstitutes(phoneme) {
-    return phonemeTypes.getPhonemesInSameClass(phoneme).concat(phoneme);
+    return _.uniq(phonemeTypes.getPhonemesInSameClass(phoneme).concat(phoneme));
   }
 
   function stuffSyllableHead(openingPhoneme) {

@@ -4,7 +4,6 @@ var callBackOnNextTick = require('conform-async').callBackOnNextTick;
 var seedrandom = require('seedrandom');
 var createDigester = require('./digester').createDigester;
 var createProbable = require('probable').createProbable;
-var phonemeTypes = require('phoneme-types');
 var divideSyllable = require('./divide-syllable');
 var _ = require('lodash');
 var createWordPhonemeMap = require('word-phoneme-map').createWordPhonemeMap;
@@ -89,12 +88,32 @@ function createRime(opts, createDone) {
     // 1. Get substitutes for the phonemes at the start and end.
     var startingPhoneme = dividedSyllable.start;
     var endingPhoneme = dividedSyllable.end;
-    var startingSubstitutes = butcher.getPhonemeSubstitutes(startingPhoneme);
-    var endingSubstitutes = butcher.getPhonemeSubstitutes(endingPhoneme);
+
+    var startingSubstitutes;
+    var endingSubstitutes;
+    var startSequences;
+    var endSequences;
+
+    if (startingPhoneme) {
+      startingSubstitutes = butcher.getPhonemeSubstitutes(startingPhoneme);
+    }
+
+    if (endingPhoneme) {
+      endingSubstitutes = butcher.getPhonemeSubstitutes(endingPhoneme);
+    }
 
     // 2. Stuff heads and tails for each of those substitutes.
-    var startSequences = startingSubstitutes.map(butcher.stuffSyllableHead);
-    var endSequences = startingSubstitutes.map(butcher.stuffSyllableTail);
+    if (startingSubstitutes) {
+      startSequences = startingSubstitutes.map(butcher.stuffSyllableHead);
+    }
+    else {
+      startSequences = [startingPhoneme];
+    }
+
+    if (endingSubstitutes) {
+      endSequences = endingSubstitutes;
+    }
+
     // 3. Reconstitute the permutations.
     var permutationElements = [];
     addToArrayIfExists(permutationElements, startSequences);
