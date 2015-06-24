@@ -53,6 +53,15 @@ var rhymeTestCases = [
       [ 'T', 'AO', 'P' ],
       [ 'T', 'AO', 'T' ]
     ]
+  },
+  {
+    seed: '2015-06-24T01:45:19.441Z',
+    word: 'aim',
+    rhymes: [
+      ['EY', 'M'],
+      ['EY', 'N'],
+      ['EY', 'NG']
+    ]
   }
 ];
 

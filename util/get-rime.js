@@ -9,6 +9,7 @@ if (process.argv.length < 3) {
 }
 
 var word = process.argv[2];
+var strict = (process.argv.length > 3 && process.argv[3] === '--strict');
 
 var seed = (new Date()).toISOString();
 console.log('Seed:', seed);
@@ -23,7 +24,8 @@ createRime(
 
 function getRhymesWithRime(error, rime) {
   var rhymes = rime.getLastSyllableRhymes({
-    base: word
+    base: word,
+    strict: strict
   });
 
   console.log('Last syllable rhyme phoneme sequences:');

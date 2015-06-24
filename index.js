@@ -53,11 +53,22 @@ function createRime(opts, createDone) {
   // Something more accurate but not that long.
   function getLastSyllableRhymes(opts) {
     var rhymes;
-    var base = opts.base;
-    var indexOfSyllableToVary = opts.indexOfSyllableToVary;
+    var base ;
+    var indexOfSyllableToVary;
+    var strict;
+
+    if (opts) {
+      base = opts.base
+      indexOfSyllableToVary = opts.indexOfSyllableToVary;
+      strict = opts.strict;
+    }
 
     var syllables = digester.digestToSyllables(base);
-    if (syllables && syllables.length > 0) {
+
+    if (strict) {
+      return syllables;
+    }
+    else if (syllables && syllables.length > 0) {
       if (isNaN(indexOfSyllableToVary) ||
         indexOfSyllableToVary >= syllables.length) {
 
@@ -71,7 +82,7 @@ function createRime(opts, createDone) {
       else if (indexOfSyllableToVary === syllables.length - 1) {
         varyingSyllablePosition = 'end';
       }
-
+      
       return getSyllableVariants(
         butcher, syllables[indexOfSyllableToVary], varyingSyllablePosition
       );
@@ -107,7 +118,7 @@ function createRime(opts, createDone) {
       startSequences = startingSubstitutes.map(butcher.stuffSyllableHead);
     }
     else {
-      startSequences = [startingPhoneme];
+      startSequences = startingPhoneme ? [startingPhoneme] : undefined;
     }
 
     if (endingSubstitutes) {
@@ -123,8 +134,6 @@ function createRime(opts, createDone) {
     return uniqNested(product);
   }
 
-  // TODO: These are exact matches. Should return anything that has the same 
-  // ending phoneme sequence.
   function getWordsThatFitPhonemes(phonemes, done) {
     wordPhonemeMap.wordsForPhonemeEndSequence(phonemes, done);
   }
