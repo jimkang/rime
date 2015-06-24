@@ -21,9 +21,6 @@
     "url": "https://github.com/jimkang/rime/issues"
   },
   "homepage": "https://github.com/jimkang/rime",
-  "devDependencies": {
-    "queue-async": "^1.0.7"
-  },
   "dependencies": {
     "conform-async": "^1.1.1",
     "export-methods": "^1.1.0",
@@ -36,6 +33,7 @@
     "seedrandom": "^2.3.11",
     "split": "^0.3.3",
     "tape": "^3.5.0",
-    "word-phoneme-map": "^1.3.2"
+    "word-phoneme-map": "^1.3.2",
+    "queue-async": "^1.0.7"
   }
 }

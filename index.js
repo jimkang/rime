@@ -7,6 +7,7 @@ var createProbable = require('probable').createProbable;
 var divideSyllable = require('./divide-syllable');
 var _ = require('lodash');
 var createWordPhonemeMap = require('word-phoneme-map').createWordPhonemeMap;
+var queue = require('queue-async');
 
 function createRime(opts, createDone) {
   var random;
@@ -138,6 +139,18 @@ function createRime(opts, createDone) {
     wordPhonemeMap.wordsForPhonemeEndSequence(phonemes, done);
   }
 
+  function getRhymes(opts, done) {
+    var rhymePhonemes = getLastSyllableRhymes(opts);
+
+    var q = queue(1);
+    rhymePhonemes.forEach(queueGetWords);
+    q.awaitAll(done);
+
+    function queueGetWords(rhyme) {
+      q.defer(getWordsThatFitPhonemes, rhyme);
+    }
+  }
+
   function closeDb(done) {
     wordPhonemeMap.close(done);
   }
@@ -147,6 +160,7 @@ function createRime(opts, createDone) {
     createDone(
       error,
       exportMethods(
+        getRhymes,
         getLastSyllableRhymes,
         getWordsThatFitPhonemes,
         closeDb

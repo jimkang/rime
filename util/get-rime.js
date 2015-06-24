@@ -36,7 +36,7 @@ function getRhymesWithRime(error, rime) {
   q.awaitAll(reportAllWords);
 
   function queueGetWords(rhyme) {
-    q.defer(rime.getWordsThatFitPhonemes, rhyme)
+    q.defer(rime.getWordsThatFitPhonemes, rhyme);
   }
 }
 

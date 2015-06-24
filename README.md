@@ -57,13 +57,43 @@ It's not run on postinstall automatically because it takes a while, about 40 min
 Usage
 -----
 
-Load the module.
+Create an instance of rime.
 
-    var rime = require('rime');
+    var createRime = require('rime');
 
-Get a loose rhyme.
+    createRime(
+      {
+        random: seedrandom('outer'),
+        wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+      },
+      useRime
+    );
 
-    console.log(rime.getRhymesForWord('pock'));
+    function useRime(error, rime) {
+      if (error) {
+        console.log(error);
+      }
+
+      rime.getRhymes(
+        {
+          base: 'pock'
+        },
+        reportWords
+      );
+
+      function reportWords(error, words) {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(words);
+        }
+      }
+
+API
+---
+
+TODO
 
 Tests
 -----

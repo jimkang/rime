@@ -316,3 +316,32 @@ function runWordMatchTest(testCase, caseNumber) {
     }
   });
 }
+
+test('Outer convenience method', function getRhymesTest(t) {
+  t.plan(3);
+
+  // TODO: Provide defaults.
+  createRime(
+    {
+      random: seedrandom('outer'),
+      wordPhonemeDbPath: __dirname + '/../data/word-phoneme-map.db'
+    },
+    useRime
+  );
+
+  function useRime(error, rime) {
+    t.ok(!error, 'No error while creating rime.');
+
+    rime.getRhymes(
+      {
+        base: 'beef'
+      },
+      checkWords
+    );
+
+    function checkWords(error, words) {
+      t.ok(!error, 'No error occurred while getting words.');
+      t.equal(words.length, 48, 'Gets the all the words that it should.');
+    }
+  }
+});
