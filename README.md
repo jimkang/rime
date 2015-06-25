@@ -3,7 +3,7 @@ rime
 
 rime is a module that finds rhymes, including loose rhymes.
 
-A rhyme finder that works by strictly matching the phonemes of the last syllable of words would get rhymes like:
+A rhyme finder that works by strictly matching the phonemes of the last syllable of words would get rhymes for the word AIM such as:
 
     SHAME
     TAME
@@ -18,7 +18,7 @@ A rhyme finder that works by strictly matching the phonemes of the last syllable
     DAME
     DAMME
 
-However, rime can additionally find rhymes like:
+However, rime can additionally find rhymes for AIM like:
 
     GAIN
     LAIN
