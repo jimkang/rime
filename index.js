@@ -85,7 +85,9 @@ function createRime(opts, createDone) {
       }
       
       return getSyllableVariants(
-        butcher, syllables[indexOfSyllableToVary], varyingSyllablePosition
+        butcher,
+        syllables[indexOfSyllableToVary],
+        varyingSyllablePosition
       );
     }
 
@@ -144,10 +146,19 @@ function createRime(opts, createDone) {
 
     var q = queue(1);
     rhymePhonemes.forEach(queueGetWords);
-    q.awaitAll(done);
+    q.awaitAll(cleanUp);
 
     function queueGetWords(rhyme) {
       q.defer(getWordsThatFitPhonemes, rhyme);
+    }
+
+    function cleanUp(error, rhymes) {
+      if (error) {
+        done(error);
+      }
+      else {
+        done(error, _.uniq(_.flatten(rhymes)));
+      }
     }
   }
 

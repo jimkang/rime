@@ -340,8 +340,9 @@ test('Outer convenience method', function getRhymesTest(t) {
     );
 
     function checkWords(error, words) {
+      // console.log(words);
       t.ok(!error, 'No error occurred while getting words.');
-      t.equal(words.length, 48, 'Gets the all the words that it should.');
+      t.equal(words.length, 678, 'Gets the all the words that it should.');
     }
   }
 });
